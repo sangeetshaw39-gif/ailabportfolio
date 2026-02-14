@@ -94,7 +94,6 @@ closeBtn.onclick = () => {
 document.addEventListener("DOMContentLoaded", function() {
 
     let messageCount = 0;
-    const messageLimit = 5;
 
     const toggle = document.getElementById("chat-toggle");
     const chatbot = document.getElementById("chatbot");
@@ -112,37 +111,39 @@ document.addEventListener("DOMContentLoaded", function() {
         chatbot.style.display = "none";
     };
 
-    input.addEventListener("keypress", function(e) {
+    input.addEventListener("keypress", async function(e) {
+
         if (e.key === "Enter") {
+
             const userMessage = input.value.trim();
             if (!userMessage) return;
 
             body.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
             input.value = "";
 
-            if (messageCount >= messageLimit) {
-                body.innerHTML += `
-                <p><strong>AI:</strong> I've reached my response limit 😊<br>
-                For deeper problem-solving, contact <strong>Sangeet Shaw</strong> directly.</p>`;
-                return;
+            try {
+
+                const response = await fetch("/api/chat", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: userMessage,
+                        count: messageCount
+                    })
+                });
+
+                const data = await response.json();
+
+                body.innerHTML += `<p><strong>AI:</strong> ${data.reply}</p>`;
+                body.scrollTop = body.scrollHeight;
+
+                messageCount++;
+
+            } catch (error) {
+                body.innerHTML += `<p><strong>AI:</strong> Something went wrong. Please contact Sangeet directly.</p>`;
             }
-
-            messageCount++;
-
-            let response = "Sangeet would be happy to discuss this further.";
-
-            const msg = userMessage.toLowerCase();
-
-            if (msg.includes("project")) {
-                response = "He built FIFO automation & GST billing systems for MSMEs.";
-            } else if (msg.includes("experience")) {
-                response = "AI Transformation Intern at Tata iQ and Deloitte Analytics simulation.";
-            } else if (msg.includes("skill")) {
-                response = "Business Analytics, Automation, Financial Modeling, AI strategy.";
-            }
-
-            body.innerHTML += `<p><strong>AI:</strong> ${response}</p>`;
-            body.scrollTop = body.scrollHeight;
         }
     });
 
