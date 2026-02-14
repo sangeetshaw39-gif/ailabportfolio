@@ -74,7 +74,7 @@ window.addEventListener("scroll", function () {
     }
 });
 
-document.addEventListener("DOMContentLoaded"), function() {
+document.addEventListener("DOMContentLoaded", function() {
 
     let messageCount = 0;
     const messageLimit = 5;
@@ -85,6 +85,11 @@ document.addEventListener("DOMContentLoaded"), function() {
     const input = document.getElementById("chat-input");
     const body = document.getElementById("chat-body");
 
+    if (!toggle || !chatbot || !closeBtn || !input || !body) {
+        console.log("Chat elements missing");
+        return;
+    }
+
     toggle.onclick = () => {
         chatbot.style.display = "flex";
     };
@@ -93,11 +98,11 @@ document.addEventListener("DOMContentLoaded"), function() {
         chatbot.style.display = "none";
     };
 
-    input.addEventListener("keypress", function(e) {
+    input.addEventListener("keydown", function(e) {
 
         if (e.key === "Enter") {
 
-            const userText = input.value.trim().toLowerCase();
+            const userText = input.value.trim();
             if (!userText) return;
 
             body.innerHTML += `<p><strong>You:</strong> ${userText}</p>`;
@@ -126,114 +131,115 @@ document.addEventListener("DOMContentLoaded"), function() {
             const typing = body.querySelector("p:last-child");
             if (typing) typing.remove();
             callback();
-        }, 700);
+        }, 600);
     }
 
     function generateSmartReply(message) {
 
-    const responses = {
+        const responses = {
 
-        greeting: [
-            "Hello 👋 I'm Sangeet Shaw’s AI assistant. How can I help you today?",
-            "Hi there! I can guide you about Sangeet’s projects, skills, and consulting approach.",
-            "Welcome! Ask me anything about Sangeet’s AI, analytics, or business automation work."
-        ],
+            greeting: [
+                "Hello 👋 I'm Sangeet Shaw’s AI assistant. How can I help you today?",
+                "Hi there! I can guide you about Sangeet’s projects, skills, and consulting approach.",
+                "Welcome! Ask me anything about Sangeet’s AI, analytics, or business automation work."
+            ],
 
-        about: [
-            "Sangeet Shaw is an AI-driven Business Analytics consultant focused on automation, financial modeling, and MSME digital transformation.",
-            "He is a commerce student transitioning into AI & Business Analytics, preparing for CAT 2026.",
-            "Sangeet combines finance, strategy, and AI to build structured, data-backed business systems."
-        ],
+            about: [
+                "Sangeet Shaw is an AI-driven Business Analytics consultant focused on automation, financial modeling, and MSME digital transformation.",
+                "He is a commerce student transitioning into AI & Business Analytics, preparing for CAT 2026.",
+                "Sangeet combines finance, strategy, and AI to build structured, data-backed business systems."
+            ],
 
-        skills: [
-            "His core skills include Business Analytics, Financial Modeling, Credit Risk Analysis, Automation using Google Sheets & Apps Script, and AI Strategy.",
-            "He specializes in process automation, structured decision systems, and analytics-driven consulting.",
-            "His expertise bridges finance, operations, and AI implementation."
-        ],
+            skills: [
+                "His core skills include Business Analytics, Financial Modeling, Credit Risk Analysis, Automation using Google Sheets & Apps Script, and AI Strategy.",
+                "He specializes in process automation, structured decision systems, and analytics-driven consulting.",
+                "His expertise bridges finance, operations, and AI implementation."
+            ],
 
-        projects: [
-            "He built a FIFO Inventory Intelligence System that automated stock deduction and improved reporting visibility.",
-            "He developed a GST Billing Automation Engine integrating invoice generation, stock lookup, and dashboards.",
-            "His projects focus on reducing manual errors and increasing operational efficiency."
-        ],
+            projects: [
+                "He built a FIFO Inventory Intelligence System that automated stock deduction and improved reporting visibility.",
+                "He developed a GST Billing Automation Engine integrating invoice generation, stock lookup, and dashboards.",
+                "His projects focus on reducing manual errors and increasing operational efficiency."
+            ],
 
-        experience: [
-            "He worked as an AI Transformation Consultant Intern at Tata iQ (Forge), analyzing credit delinquency risk.",
-            "He completed Deloitte Australia’s Data Analytics Simulation focusing on risk analysis and dashboards.",
-            "His experience centers around data-driven financial risk modeling."
-        ],
+            experience: [
+                "He worked as an AI Transformation Consultant Intern at Tata iQ (Forge), analyzing credit delinquency risk.",
+                "He completed Deloitte Australia’s Data Analytics Simulation focusing on risk analysis and dashboards.",
+                "His experience centers around data-driven financial risk modeling."
+            ],
 
-        mba: [
-            "He is preparing for CAT 2026 with a focus on Business Analytics, Strategy, and AI in Business.",
-            "His long-term goal is to build scalable AI-driven consulting systems.",
-            "He aims to combine MBA + CFA for strategic financial leadership."
-        ],
+            mba: [
+                "He is preparing for CAT 2026 with a focus on Business Analytics, Strategy, and AI in Business.",
+                "His long-term goal is to build scalable AI-driven consulting systems.",
+                "He aims to combine MBA + CFA for strategic financial leadership."
+            ],
 
-        business: [
-            "Improving business performance requires automation, financial clarity, and structured data tracking.",
-            "Most businesses grow faster when manual processes are replaced with automated dashboards.",
-            "The first step is identifying inefficiencies and designing system-based solutions."
-        ],
+            business: [
+                "Improving business performance requires automation, financial clarity, and structured data tracking.",
+                "Most businesses grow faster when manual processes are replaced with automated dashboards.",
+                "The first step is identifying inefficiencies and designing system-based solutions."
+            ],
 
-        automation: [
-            "Automation reduces human error and improves scalability.",
-            "Sangeet builds automation systems using Google Sheets, Apps Script, and structured logic.",
-            "Smart automation creates real-time visibility for decision making."
-        ],
+            automation: [
+                "Automation reduces human error and improves scalability.",
+                "Sangeet builds automation systems using Google Sheets, Apps Script, and structured logic.",
+                "Smart automation creates real-time visibility for decision making."
+            ],
 
-        finance: [
-            "Financial improvement requires risk analysis, cash flow clarity, and disciplined capital allocation.",
-            "Structured financial modeling enables better strategic decisions.",
-            "Data-backed risk segmentation improves lending and credit decisions."
-        ],
+            finance: [
+                "Financial improvement requires risk analysis, cash flow clarity, and disciplined capital allocation.",
+                "Structured financial modeling enables better strategic decisions.",
+                "Data-backed risk segmentation improves lending and credit decisions."
+            ],
 
-        unknown: [
-            "That’s an interesting question. Sangeet would be happy to explore this in a deeper discussion.",
-            "For advanced or personalized guidance, direct consultation would be best.",
-            "This requires deeper strategic analysis. Feel free to contact Sangeet directly."
-        ]
-    };
+            unknown: [
+                "That’s an interesting question. Sangeet would be happy to explore this in a deeper discussion.",
+                "For advanced or personalized guidance, direct consultation would be best.",
+                "This requires deeper strategic analysis. Feel free to contact Sangeet directly."
+            ]
+        };
 
-    function randomPick(arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
+        function randomPick(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        if (message.includes("hello") || message.includes("hi")) {
+            return randomPick(responses.greeting);
+        }
+
+        if (message.includes("who is") || message.includes("about sangeet")) {
+            return randomPick(responses.about);
+        }
+
+        if (message.includes("skill")) {
+            return randomPick(responses.skills);
+        }
+
+        if (message.includes("project")) {
+            return randomPick(responses.projects);
+        }
+
+        if (message.includes("experience")) {
+            return randomPick(responses.experience);
+        }
+
+        if (message.includes("mba") || message.includes("cat")) {
+            return randomPick(responses.mba);
+        }
+
+        if (message.includes("business") || message.includes("improve") || message.includes("grow")) {
+            return randomPick(responses.business);
+        }
+
+        if (message.includes("automation") || message.includes("automate")) {
+            return randomPick(responses.automation);
+        }
+
+        if (message.includes("finance") || message.includes("investment")) {
+            return randomPick(responses.finance);
+        }
+
+        return randomPick(responses.unknown);
     }
 
-    if (message.includes("hello") || message.includes("hi")) {
-        return randomPick(responses.greeting);
-    }
-
-    if (message.includes("who is") || message.includes("about sangeet")) {
-        return randomPick(responses.about);
-    }
-
-    if (message.includes("skill")) {
-        return randomPick(responses.skills);
-    }
-
-    if (message.includes("project")) {
-        return randomPick(responses.projects);
-    }
-
-    if (message.includes("experience")) {
-        return randomPick(responses.experience);
-    }
-
-    if (message.includes("mba") || message.includes("cat")) {
-        return randomPick(responses.mba);
-    }
-
-    if (message.includes("business") || message.includes("improve") || message.includes("grow")) {
-        return randomPick(responses.business);
-    }
-
-    if (message.includes("automation") || message.includes("automate")) {
-        return randomPick(responses.automation);
-    }
-
-    if (message.includes("finance") || message.includes("investment")) {
-        return randomPick(responses.finance);
-    }
-
-    return randomPick(responses.unknown);
-}
-}
+});
