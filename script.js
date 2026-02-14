@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (e.key === "Enter") {
 
-            const userText = input.value.trim();
+            const userText = input.value.trim().toLowerCase();
             if (!userText) return;
 
             body.innerHTML += `<p><strong>You:</strong> ${userText}</p>`;
@@ -131,39 +131,108 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function generateSmartReply(message) {
 
-        if (message.includes("business")) {
-            return "Improving business performance usually involves automation, structured financial tracking, and data-driven decision systems.";
-        }
+    const responses = {
 
-        if (message.includes("ai") || message.includes("automation")) {
-            return "AI helps optimize decision-making, reduce manual errors, and improve operational efficiency when integrated strategically.";
-        }
+        greeting: [
+            "Hello 👋 I'm Sangeet Shaw’s AI assistant. How can I help you today?",
+            "Hi there! I can guide you about Sangeet’s projects, skills, and consulting approach.",
+            "Welcome! Ask me anything about Sangeet’s AI, analytics, or business automation work."
+        ],
 
-        if (message.includes("finance") || message.includes("investment")) {
-            return "Financial improvement requires risk analysis, cash flow clarity, and disciplined capital allocation.";
-        }
+        about: [
+            "Sangeet Shaw is an AI-driven Business Analytics consultant focused on automation, financial modeling, and MSME digital transformation.",
+            "He is a commerce student transitioning into AI & Business Analytics, preparing for CAT 2026.",
+            "Sangeet combines finance, strategy, and AI to build structured, data-backed business systems."
+        ],
 
-        if (message.includes("career") || message.includes("mba")) {
-            return "Strategic career growth requires skill depth, analytical thinking, and consistent execution.";
-        }
+        skills: [
+            "His core skills include Business Analytics, Financial Modeling, Credit Risk Analysis, Automation using Google Sheets & Apps Script, and AI Strategy.",
+            "He specializes in process automation, structured decision systems, and analytics-driven consulting.",
+            "His expertise bridges finance, operations, and AI implementation."
+        ],
 
-        if (message.includes("help") || message.includes("problem")) {
-            return "Start by defining the problem clearly, identifying constraints, and applying structured data-based analysis.";
-        }
+        projects: [
+            "He built a FIFO Inventory Intelligence System that automated stock deduction and improved reporting visibility.",
+            "He developed a GST Billing Automation Engine integrating invoice generation, stock lookup, and dashboards.",
+            "His projects focus on reducing manual errors and increasing operational efficiency."
+        ],
 
-        if (message.includes("technology") || message.includes("software")) {
-            return "Technology should simplify operations, increase visibility, and create measurable efficiency gains.";
-        }
+        experience: [
+            "He worked as an AI Transformation Consultant Intern at Tata iQ (Forge), analyzing credit delinquency risk.",
+            "He completed Deloitte Australia’s Data Analytics Simulation focusing on risk analysis and dashboards.",
+            "His experience centers around data-driven financial risk modeling."
+        ],
 
-        if (message.includes("marketing")) {
-            return "Effective marketing combines positioning clarity, data insights, and consistent brand communication.";
-        }
+        mba: [
+            "He is preparing for CAT 2026 with a focus on Business Analytics, Strategy, and AI in Business.",
+            "His long-term goal is to build scalable AI-driven consulting systems.",
+            "He aims to combine MBA + CFA for strategic financial leadership."
+        ],
 
-        if (message.includes("productivity")) {
-            return "Productivity improves when systems replace manual repetition and metrics guide decisions.";
-        }
+        business: [
+            "Improving business performance requires automation, financial clarity, and structured data tracking.",
+            "Most businesses grow faster when manual processes are replaced with automated dashboards.",
+            "The first step is identifying inefficiencies and designing system-based solutions."
+        ],
 
-        return "That’s an interesting question. A structured, data-driven approach is usually the best starting point.";
+        automation: [
+            "Automation reduces human error and improves scalability.",
+            "Sangeet builds automation systems using Google Sheets, Apps Script, and structured logic.",
+            "Smart automation creates real-time visibility for decision making."
+        ],
+
+        finance: [
+            "Financial improvement requires risk analysis, cash flow clarity, and disciplined capital allocation.",
+            "Structured financial modeling enables better strategic decisions.",
+            "Data-backed risk segmentation improves lending and credit decisions."
+        ],
+
+        unknown: [
+            "That’s an interesting question. Sangeet would be happy to explore this in a deeper discussion.",
+            "For advanced or personalized guidance, direct consultation would be best.",
+            "This requires deeper strategic analysis. Feel free to contact Sangeet directly."
+        ]
+    };
+
+    function randomPick(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
     }
 
-});
+    if (message.includes("hello") || message.includes("hi")) {
+        return randomPick(responses.greeting);
+    }
+
+    if (message.includes("who is") || message.includes("about sangeet")) {
+        return randomPick(responses.about);
+    }
+
+    if (message.includes("skill")) {
+        return randomPick(responses.skills);
+    }
+
+    if (message.includes("project")) {
+        return randomPick(responses.projects);
+    }
+
+    if (message.includes("experience")) {
+        return randomPick(responses.experience);
+    }
+
+    if (message.includes("mba") || message.includes("cat")) {
+        return randomPick(responses.mba);
+    }
+
+    if (message.includes("business") || message.includes("improve") || message.includes("grow")) {
+        return randomPick(responses.business);
+    }
+
+    if (message.includes("automation") || message.includes("automate")) {
+        return randomPick(responses.automation);
+    }
+
+    if (message.includes("finance") || message.includes("investment")) {
+        return randomPick(responses.finance);
+    }
+
+    return randomPick(responses.unknown);
+}
