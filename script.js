@@ -91,38 +91,59 @@ closeBtn.onclick = () => {
     chatbot.style.display = "none";
 };
 
-input.addEventListener("keypress", function(e) {
-    if (e.key === "Enter") {
-        const userMessage = input.value.trim();
-        if (!userMessage) return;
+document.addEventListener("DOMContentLoaded", function() {
 
-        body.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
-        input.value = "";
+    let messageCount = 0;
+    const messageLimit = 5;
 
-        if (messageCount >= messageLimit) {
-            body.innerHTML += `
-            <p><strong>AI:</strong> I've reached my response limit 😊<br>
-            For deeper problem-solving and consulting, please contact <strong>Sangeet Shaw</strong> directly via email or LinkedIn.</p>`;
-            return;
+    const toggle = document.getElementById("chat-toggle");
+    const chatbot = document.getElementById("chatbot");
+    const closeBtn = document.getElementById("close-chat");
+    const input = document.getElementById("chat-input");
+    const body = document.getElementById("chat-body");
+
+    if (!toggle) return;
+
+    toggle.onclick = () => {
+        chatbot.style.display = "flex";
+    };
+
+    closeBtn.onclick = () => {
+        chatbot.style.display = "none";
+    };
+
+    input.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            const userMessage = input.value.trim();
+            if (!userMessage) return;
+
+            body.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
+            input.value = "";
+
+            if (messageCount >= messageLimit) {
+                body.innerHTML += `
+                <p><strong>AI:</strong> I've reached my response limit 😊<br>
+                For deeper problem-solving, contact <strong>Sangeet Shaw</strong> directly.</p>`;
+                return;
+            }
+
+            messageCount++;
+
+            let response = "Sangeet would be happy to discuss this further.";
+
+            const msg = userMessage.toLowerCase();
+
+            if (msg.includes("project")) {
+                response = "He built FIFO automation & GST billing systems for MSMEs.";
+            } else if (msg.includes("experience")) {
+                response = "AI Transformation Intern at Tata iQ and Deloitte Analytics simulation.";
+            } else if (msg.includes("skill")) {
+                response = "Business Analytics, Automation, Financial Modeling, AI strategy.";
+            }
+
+            body.innerHTML += `<p><strong>AI:</strong> ${response}</p>`;
+            body.scrollTop = body.scrollHeight;
         }
+    });
 
-        messageCount++;
-
-        let response = "That's interesting. Sangeet would be happy to discuss this in detail.";
-
-        const msg = userMessage.toLowerCase();
-
-        if (msg.includes("project")) {
-            response = "Sangeet built automation systems including FIFO inventory logic and GST billing dashboards for MSMEs.";
-        } else if (msg.includes("experience")) {
-            response = "He worked as an AI Transformation Intern at Tata iQ and completed Deloitte's analytics simulation.";
-        } else if (msg.includes("skill")) {
-            response = "He specializes in Business Analytics, Financial Modeling, Automation, Excel, Apps Script, and AI-driven strategy.";
-        } else if (msg.includes("cat")) {
-            response = "Sangeet is preparing for CAT 2026 with a target MBA in Business Analytics.";
-        }
-
-        body.innerHTML += `<p><strong>AI:</strong> ${response}</p>`;
-        body.scrollTop = body.scrollHeight;
-    }
 });
