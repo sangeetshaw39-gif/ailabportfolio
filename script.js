@@ -74,23 +74,6 @@ window.addEventListener("scroll", function () {
     }
 });
 
-let messageCount = 0;
-const messageLimit = 5;
-
-const toggle = document.getElementById("chat-toggle");
-const chatbot = document.getElementById("chatbot");
-const closeBtn = document.getElementById("close-chat");
-const input = document.getElementById("chat-input");
-const body = document.getElementById("chat-body");
-
-toggle.onclick = () => {
-    chatbot.style.display = "flex";
-};
-
-closeBtn.onclick = () => {
-    chatbot.style.display = "none";
-};
-
 document.addEventListener("DOMContentLoaded", function() {
 
     let messageCount = 0;
@@ -101,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const input = document.getElementById("chat-input");
     const body = document.getElementById("chat-body");
 
-    if (!toggle) return;
+    if (!toggle || !chatbot || !closeBtn || !input || !body) return;
 
     toggle.onclick = () => {
         chatbot.style.display = "flex";
