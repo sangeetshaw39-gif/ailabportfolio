@@ -149,6 +149,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 "He is a commerce student transitioning into AI & Business Analytics, preparing for CAT 2026.",
                 "Sangeet combines finance, strategy, and AI to build structured, data-backed business systems."
             ],
+            recruiter: [
+            "Sangeet Shaw is an AI-driven Business Analytics consultant specializing in automation, financial modeling, and credit risk analytics. He is currently preparing for CAT 2026 with a focus on Business Analytics.",
+            "Sangeet combines finance, strategy, and AI implementation to build structured, scalable business systems. He has internship experience in AI-driven risk analytics and automation consulting.",
+            "He has worked on inventory automation systems, GST billing engines, and credit delinquency analysis. His approach is data-driven and execution-focused."
+        ],
+
 
             skills: [
                 "His core skills include Business Analytics, Financial Modeling, Credit Risk Analysis, Automation using Google Sheets & Apps Script, and AI Strategy.",
@@ -207,10 +213,26 @@ document.addEventListener("DOMContentLoaded", function() {
             return randomPick(responses.greeting);
         }
 
-        if (message.includes("who is") || message.includes("about sangeet")) {
-            return randomPick(responses.about);
-        }
+        if (
+        message.includes("recruit") ||
+        message.includes("hire") ||
+        message.includes("candidate") ||
+        message.includes("profile") ||
+        message.includes("tell me about him") ||
+        message.includes("about him") ||
+        message.includes("who is sangeet") ||
+        message.includes("know him")
+    ) {
+        return pick(responses.recruiter);
+    }
 
+         if (
+        message.includes("about sangeet") ||
+        message.includes("who is") ||
+        message.includes("tell me about sangeet")
+    ) {
+        return pick(responses.recruiter);
+    }
         if (message.includes("skill")) {
             return randomPick(responses.skills);
         }
