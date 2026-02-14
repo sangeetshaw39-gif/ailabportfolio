@@ -77,14 +77,13 @@ window.addEventListener("scroll", function () {
 document.addEventListener("DOMContentLoaded", function() {
 
     let messageCount = 0;
+    const messageLimit = 5;
 
     const toggle = document.getElementById("chat-toggle");
     const chatbot = document.getElementById("chatbot");
     const closeBtn = document.getElementById("close-chat");
     const input = document.getElementById("chat-input");
     const body = document.getElementById("chat-body");
-
-    if (!toggle || !chatbot || !closeBtn || !input || !body) return;
 
     toggle.onclick = () => {
         chatbot.style.display = "flex";
@@ -94,40 +93,77 @@ document.addEventListener("DOMContentLoaded", function() {
         chatbot.style.display = "none";
     };
 
-    input.addEventListener("keypress", async function(e) {
+    input.addEventListener("keypress", function(e) {
 
         if (e.key === "Enter") {
 
-            const userMessage = input.value.trim();
-            if (!userMessage) return;
+            const userText = input.value.trim();
+            if (!userText) return;
 
-            body.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
+            body.innerHTML += `<p><strong>You:</strong> ${userText}</p>`;
             input.value = "";
 
-            try {
-
-                const response = await fetch("/api/chat", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        message: userMessage,
-                        count: messageCount
-                    })
-                });
-
-                const data = await response.json();
-
-                body.innerHTML += `<p><strong>AI:</strong> ${data.reply}</p>`;
+            if (messageCount >= messageLimit) {
+                body.innerHTML += `<p><strong>AI:</strong> I've reached my free response limit 😊 For deeper consulting and advanced solutions, please contact Sangeet Shaw directly.</p>`;
                 body.scrollTop = body.scrollHeight;
-
-                messageCount++;
-
-            } catch (error) {
-                body.innerHTML += `<p><strong>AI:</strong> Something went wrong. Please contact Sangeet directly.</p>`;
+                return;
             }
+
+            simulateThinking(() => {
+                const reply = generateSmartReply(userText.toLowerCase());
+                body.innerHTML += `<p><strong>AI:</strong> ${reply}</p>`;
+                body.scrollTop = body.scrollHeight;
+                messageCount++;
+            });
         }
     });
+
+    function simulateThinking(callback) {
+        body.innerHTML += `<p><strong>AI:</strong> typing...</p>`;
+        body.scrollTop = body.scrollHeight;
+
+        setTimeout(() => {
+            const typing = body.querySelector("p:last-child");
+            if (typing) typing.remove();
+            callback();
+        }, 700);
+    }
+
+    function generateSmartReply(message) {
+
+        if (message.includes("business")) {
+            return "Improving business performance usually involves automation, structured financial tracking, and data-driven decision systems.";
+        }
+
+        if (message.includes("ai") || message.includes("automation")) {
+            return "AI helps optimize decision-making, reduce manual errors, and improve operational efficiency when integrated strategically.";
+        }
+
+        if (message.includes("finance") || message.includes("investment")) {
+            return "Financial improvement requires risk analysis, cash flow clarity, and disciplined capital allocation.";
+        }
+
+        if (message.includes("career") || message.includes("mba")) {
+            return "Strategic career growth requires skill depth, analytical thinking, and consistent execution.";
+        }
+
+        if (message.includes("help") || message.includes("problem")) {
+            return "Start by defining the problem clearly, identifying constraints, and applying structured data-based analysis.";
+        }
+
+        if (message.includes("technology") || message.includes("software")) {
+            return "Technology should simplify operations, increase visibility, and create measurable efficiency gains.";
+        }
+
+        if (message.includes("marketing")) {
+            return "Effective marketing combines positioning clarity, data insights, and consistent brand communication.";
+        }
+
+        if (message.includes("productivity")) {
+            return "Productivity improves when systems replace manual repetition and metrics guide decisions.";
+        }
+
+        return "That’s an interesting question. A structured, data-driven approach is usually the best starting point.";
+    }
 
 });
