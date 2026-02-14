@@ -74,7 +74,7 @@ window.addEventListener("scroll", function () {
     }
 });
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded"), function() {
 
     let messageCount = 0;
     const messageLimit = 5;
@@ -235,4 +235,5 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     return randomPick(responses.unknown);
+}
 }
