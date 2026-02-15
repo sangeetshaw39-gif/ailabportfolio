@@ -1,10 +1,11 @@
 // ===== Typing Animation =====
-const text = "AI-Driven Business Analytics & Automation Consultant";
+const text = "AI & Business Analytics Consultant | Data → Decisions → Automation";
 let index = 0;
 
 function type() {
     if (index < text.length) {
-        document.getElementById("typing").innerHTML += text.charAt(index);
+        document.getElementById("typing").innerHTML = 
+    text.substring(0, index) + "<span class='cursor'>|</span>";
         index++;
         setTimeout(type, 40);
     }
@@ -74,10 +75,18 @@ window.addEventListener("scroll", function () {
     }
 });
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
+
+    // =============================
+    // 🔧 CORE ENGINE STATE
+    // =============================
 
     let messageCount = 0;
-    const messageLimit = 5;
+    const messageLimit = 20;
+
+    let memory = [];
+    let analytics = {};
+    let currentMode = "neutral"; // neutral | recruiter | business
 
     const toggle = document.getElementById("chat-toggle");
     const chatbot = document.getElementById("chatbot");
@@ -85,183 +94,254 @@ document.addEventListener("DOMContentLoaded", function() {
     const input = document.getElementById("chat-input");
     const body = document.getElementById("chat-body");
 
-    if (!toggle || !chatbot || !closeBtn || !input || !body) {
-        console.log("Chat elements missing");
-        return;
+    toggle.onclick = () => chatbot.style.display = "flex";
+    closeBtn.onclick = () => chatbot.style.display = "none";
+
+    // =============================
+    // 🧠 INTENT DATABASE (Train Here)
+    // =============================
+
+    const intents = {
+       recruiter: { weight: 4, words: ["hire","recruit","resume","cv","candidate","job","profile","internship","placement"] },
+        business: { weight: 3, words: ["grow","scale","profit","expand","increase","improve","strategy"] },
+        ai: { weight: 3, words: ["ai","automation","machine learning","digital","predictive"] },
+        finance: { weight: 2, words: ["finance","cash flow","investment","risk","capital"] },
+        about: { weight: 4, words: ["who is","about him","about sangeet","tell me about"] },
+        skills: { weight: 2, words: ["skills","expertise","strength","capability"] },
+        projects: { weight: 2, words: ["project","portfolio","work","built"] },
+        experience: { weight: 2, words: ["experience","internship","worked"] },
+        mba: { weight: 1, words: ["mba","cat","future","plan"] },
+        greeting: { weight: 1, words: ["hello","hi","hey"] }
+    };
+
+    // =============================
+    // 📚 KNOWLEDGE BASE (Modular)
+    // =============================
+
+    const knowledge = {
+
+        profile:
+            "Sangeet Shaw is an AI-driven Business Analytics consultant specializing in automation systems, financial modeling, and MSME digital transformation.",
+
+        recruiterValue:
+            "He combines structured analytical thinking, real automation systems, and financial intelligence frameworks — making him highly suited for analytics-driven roles.",
+
+        businessFramework:
+            "Business growth requires structured KPIs, automation of repetitive workflows, financial clarity, performance dashboards, and scalable operational systems.",
+
+        aiFramework:
+            "AI implementation begins by identifying inefficiencies, structuring clean data, and deploying automation or predictive decision systems.",
+
+        financeFramework:
+            "Financial optimization requires risk modeling, capital allocation clarity, and data-backed forecasting frameworks.",
+
+        skills:
+            "Core skills include Business Analytics, Financial Modeling, Credit Risk Analysis, Google Sheets Automation, Apps Script development, Tableau dashboards, and AI strategy.",
+
+        projects:
+            "Major projects include a FIFO Inventory Intelligence System and a GST Billing Automation Engine that reduced manual errors and improved reporting visibility.",
+
+        experience:
+            "Experience includes AI Transformation Internship at Tata iQ (Forge) and Deloitte Australia Data Analytics Simulation.",
+
+        mba:
+            "Preparing for CAT 2026 aiming for MBA in Business Analytics with focus on Strategy, AI integration, and digital transformation."
+    };
+
+    // =============================
+    // 🎯 MODE DETECTION
+    // =============================
+
+    function detectMode(intent) {
+        if (intent === "recruiter") currentMode = "recruiter";
+        else if (intent === "business") currentMode = "business";
+        else currentMode = "neutral";
     }
 
-    toggle.onclick = () => {
-        chatbot.style.display = "flex";
-    };
+    // =============================
+    // 🧮 WEIGHTED MULTI-INTENT CLASSIFIER
+    // =============================
 
-    closeBtn.onclick = () => {
-        chatbot.style.display = "none";
-    };
+    function classify(message) {
 
-    input.addEventListener("keydown", function(e) {
+        let scores = {};
+
+        for (let key in intents) {
+            scores[key] = 0;
+
+            intents[key].words.forEach(word => {
+                if (message.includes(word)) {
+                    scores[key] += intents[key].weight;
+                }
+            });
+        }
+
+        let sorted = Object.entries(scores)
+            .sort((a, b) => b[1] - a[1]);
+
+        return {
+            primary: sorted[0][1] > 0 ? sorted[0][0] : "unknown",
+            confidence: sorted[0][1]
+        };
+    }
+
+    // =============================
+    // 🧠 CONTEXT ENGINE
+    // =============================
+
+    function applyContext(intent) {
+        if (intent === "unknown" && memory.length > 0) {
+            return memory[memory.length - 1].intent;
+        }
+        return intent;
+    }
+
+    // =============================
+    // 🏗️ DYNAMIC ANSWER BUILDER
+    // =============================
+
+    function buildResponse(intent) {
+
+        let tone = "";
+
+        if (currentMode === "recruiter")
+            tone = "From a recruiter perspective: ";
+
+        if (currentMode === "business")
+            tone = "From a business strategy standpoint: ";
+
+        switch (intent) {
+
+            case "about":
+                return tone + knowledge.profile;
+
+            case "recruiter":
+                return tone + knowledge.recruiterValue;
+
+            case "business":
+                return tone + knowledge.businessFramework;
+
+            case "ai":
+                return tone + knowledge.aiFramework;
+
+            case "finance":
+                return tone + knowledge.financeFramework;
+
+            case "skills":
+                return tone + knowledge.skills;
+
+            case "projects":
+                return tone + knowledge.projects;
+
+            case "experience":
+                return tone + knowledge.experience;
+
+            case "mba":
+                return tone + knowledge.mba;
+
+            case "greeting":
+                return "Hello 👋 I am Sangeet Shaw’s Strategic AI Assistant. How can I assist you today?";
+
+            default:
+    return `
+That requires deeper strategic discussion.
+
+You can contact Sangeet Shaw directly:
+📧 Email: sangeetshaw39@gmail.com
+📞 Phone: +91 62894 77287
+🔗 LinkedIn: linkedin.com/in/sangeet-shaw-753148348
+`;
+
+        }
+    }
+
+    // =============================
+    // 📊 ANALYTICS TRACKING
+    // =============================
+
+    function track(intent) {
+        analytics[intent] = (analytics[intent] || 0) + 1;
+    }
+
+    // =============================
+    // 💬 CHAT PROCESSOR
+    // =============================
+
+    input.addEventListener("keypress", function (e) {
 
         if (e.key === "Enter") {
 
-            const userText = input.value.trim();
+            const userText = input.value.trim().toLowerCase();
             if (!userText) return;
 
             body.innerHTML += `<p><strong>You:</strong> ${userText}</p>`;
             input.value = "";
 
             if (messageCount >= messageLimit) {
-                body.innerHTML += `<p><strong>AI:</strong> I've reached my free response limit 😊 For deeper consulting and advanced solutions, please contact Sangeet Shaw directly.</p>`;
+                body.innerHTML += `<p><strong>AI:</strong> Free interaction limit reached.
+
+For advanced consulting and personalized solutions:
+
+📧 sangeetshaw39@gmail.com
+📞 +91 62894 77287
+📸 Instagram: instagram.com/sangeetshaw_i
+</p>`;
                 body.scrollTop = body.scrollHeight;
                 return;
             }
 
-            simulateThinking(() => {
-                const reply = generateSmartReply(userText.toLowerCase());
-                body.innerHTML += `<p><strong>AI:</strong> ${reply}</p>`;
-                body.scrollTop = body.scrollHeight;
-                messageCount++;
+            let result = classify(userText);
+            let finalIntent = applyContext(result.primary);
+
+            detectMode(finalIntent);
+
+            let reply = buildResponse(finalIntent);
+
+            memory.push({
+                question: userText,
+                intent: finalIntent
             });
+
+            track(finalIntent);
+
+            body.innerHTML += `<p><strong>AI:</strong> ${reply}</p>`;
+            body.innerHTML += `<p style="font-size:11px;opacity:0.4;">Confidence Score: ${result.confidence}</p>`;
+
+            body.scrollTop = body.scrollHeight;
+
+            messageCount++;
         }
     });
 
-    function simulateThinking(callback) {
-        body.innerHTML += `<p><strong>AI:</strong> typing...</p>`;
-        body.scrollTop = body.scrollHeight;
+    // =============================
+    // 🔄 SESSION RESET
+    // =============================
 
-        setTimeout(() => {
-            const typing = body.querySelector("p:last-child");
-            if (typing) typing.remove();
-            callback();
-        }, 600);
-    }
+    const resetBtn = document.createElement("button");
+    resetBtn.innerText = "Reset";
+    resetBtn.style.fontSize = "11px";
+    resetBtn.style.marginLeft = "10px";
+    document.getElementById("chat-header").appendChild(resetBtn);
 
-    function generateSmartReply(message) {
-
-        const responses = {
-
-            greeting: [
-                "Hello 👋 I'm Sangeet Shaw’s AI assistant. How can I help you today?",
-                "Hi there! I can guide you about Sangeet’s projects, skills, and consulting approach.",
-                "Welcome! Ask me anything about Sangeet’s AI, analytics, or business automation work."
-            ],
-
-            about: [
-                "Sangeet Shaw is an AI-driven Business Analytics consultant focused on automation, financial modeling, and MSME digital transformation.",
-                "He is a commerce student transitioning into AI & Business Analytics, preparing for CAT 2026.",
-                "Sangeet combines finance, strategy, and AI to build structured, data-backed business systems."
-            ],
-            recruiter: [
-            "Sangeet Shaw is an AI-driven Business Analytics consultant specializing in automation, financial modeling, and credit risk analytics. He is currently preparing for CAT 2026 with a focus on Business Analytics.",
-            "Sangeet combines finance, strategy, and AI implementation to build structured, scalable business systems. He has internship experience in AI-driven risk analytics and automation consulting.",
-            "He has worked on inventory automation systems, GST billing engines, and credit delinquency analysis. His approach is data-driven and execution-focused."
-        ],
-
-
-            skills: [
-                "His core skills include Business Analytics, Financial Modeling, Credit Risk Analysis, Automation using Google Sheets & Apps Script, and AI Strategy.",
-                "He specializes in process automation, structured decision systems, and analytics-driven consulting.",
-                "His expertise bridges finance, operations, and AI implementation."
-            ],
-
-            projects: [
-                "He built a FIFO Inventory Intelligence System that automated stock deduction and improved reporting visibility.",
-                "He developed a GST Billing Automation Engine integrating invoice generation, stock lookup, and dashboards.",
-                "His projects focus on reducing manual errors and increasing operational efficiency."
-            ],
-
-            experience: [
-                "He worked as an AI Transformation Consultant Intern at Tata iQ (Forge), analyzing credit delinquency risk.",
-                "He completed Deloitte Australia’s Data Analytics Simulation focusing on risk analysis and dashboards.",
-                "His experience centers around data-driven financial risk modeling."
-            ],
-
-            mba: [
-                "He is preparing for CAT 2026 with a focus on Business Analytics, Strategy, and AI in Business.",
-                "His long-term goal is to build scalable AI-driven consulting systems.",
-                "He aims to combine MBA + CFA for strategic financial leadership."
-            ],
-
-            business: [
-                "Improving business performance requires automation, financial clarity, and structured data tracking.",
-                "Most businesses grow faster when manual processes are replaced with automated dashboards.",
-                "The first step is identifying inefficiencies and designing system-based solutions."
-            ],
-
-            automation: [
-                "Automation reduces human error and improves scalability.",
-                "Sangeet builds automation systems using Google Sheets, Apps Script, and structured logic.",
-                "Smart automation creates real-time visibility for decision making."
-            ],
-
-            finance: [
-                "Financial improvement requires risk analysis, cash flow clarity, and disciplined capital allocation.",
-                "Structured financial modeling enables better strategic decisions.",
-                "Data-backed risk segmentation improves lending and credit decisions."
-            ],
-
-            unknown: [
-                "That’s an interesting question. Sangeet would be happy to explore this in a deeper discussion.",
-                "For advanced or personalized guidance, direct consultation would be best.",
-                "This requires deeper strategic analysis. Feel free to contact Sangeet directly."
-            ]
-        };
-
-        function randomPick(arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
-        }
-
-        if (message.includes("hello") || message.includes("hi")) {
-            return randomPick(responses.greeting);
-        }
-
-        if (
-        message.includes("recruit") ||
-        message.includes("hire") ||
-        message.includes("candidate") ||
-        message.includes("profile") ||
-        message.includes("tell me about him") ||
-        message.includes("about him") ||
-        message.includes("who is sangeet") ||
-        message.includes("know him")
-    ) {
-        return pick(responses.recruiter);
-    }
-
-         if (
-        message.includes("about sangeet") ||
-        message.includes("who is") ||
-        message.includes("tell me about sangeet")
-    ) {
-        return pick(responses.recruiter);
-    }
-        if (message.includes("skill")) {
-            return randomPick(responses.skills);
-        }
-
-        if (message.includes("project")) {
-            return randomPick(responses.projects);
-        }
-
-        if (message.includes("experience")) {
-            return randomPick(responses.experience);
-        }
-
-        if (message.includes("mba") || message.includes("cat")) {
-            return randomPick(responses.mba);
-        }
-
-        if (message.includes("business") || message.includes("improve") || message.includes("grow")) {
-            return randomPick(responses.business);
-        }
-
-        if (message.includes("automation") || message.includes("automate")) {
-            return randomPick(responses.automation);
-        }
-
-        if (message.includes("finance") || message.includes("investment")) {
-            return randomPick(responses.finance);
-        }
-
-        return randomPick(responses.unknown);
-    }
+    resetBtn.onclick = function () {
+        memory = [];
+        analytics = {};
+        messageCount = 0;
+        currentMode = "neutral";
+        body.innerHTML = `<p><strong>AI:</strong> Session reset. How can I assist you?</p>`;
+    };
 
 });
+const scrollBtn = document.getElementById("scrollTopBtn");
+
+window.addEventListener("scroll", () => {
+    if (window.scrollY > 400) {
+        scrollBtn.style.display = "block";
+    } else {
+        scrollBtn.style.display = "none";
+    }
+});
+
+scrollBtn.onclick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+};
