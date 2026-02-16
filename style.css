@@ -566,3 +566,12 @@ header {
     overflow: hidden;
     z-index: 2;
 }
+.project-card ul {
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+.project-card li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
